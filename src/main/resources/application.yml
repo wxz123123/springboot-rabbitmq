@@ -1,11 +1,13 @@
 server:
-  port:
+  port: 8080
 spring:
   application:
     name: springboot-rabbitmq
-  #rabbitmqÅäÖÃ
+  #rabbitmqé…ç½®
   rabbitmq:
     host: localhost
     port: 5672
     username: guest
     password: guest
+    publisher-confirms: true
+    virtual-host: /
