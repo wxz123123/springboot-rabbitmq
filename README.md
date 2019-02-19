@@ -26,9 +26,9 @@ rabbitmq通过ConnectionFaction连接工厂创建connection连接，通过connec
 
 ### 2 Queue（队列） 介绍
  队列用于存储交换机路由过来的消息，并等待消费者来消费
+ ##### 2.1 队列的重要属性参数
+ Queue(String name, boolean durable, boolean exclusive, boolean autoDelete, Map<String, Object> arguments)
 <pre><code>
-     队列属性：
-     Queue(String name, boolean durable, boolean exclusive, boolean autoDelete, Map<String, Object> arguments)
      name:队列名字
      参数列表：
      * durable：是否持久化
@@ -46,10 +46,19 @@ rabbitmq通过ConnectionFaction连接工厂创建connection连接，通过connec
 
 ### 3 Exchange（交换机） 介绍
  交换机负责接收生产者发送的消息，并根据指定的路由规则，将消息路由到指定的队列。
-##### 3.1 交换机的几种主要类型（模式）
+ ##### 3.1 交换机的重要属性参数
+ DirectExchange(String name, boolean durable, boolean autoDelete, Map<String, Object> arguments)
+ <pre><code>
+ type：交换机类型
+ name:交换机名称
+ Durability:是否持久化，如果持久化，rabbitmq重启后交换机还存在
+ Auto-delete：当所有与该交换机绑定的队列都完成对交换机的使用之后，是否删除该交换机
+ Arguments：扩展参数
+ </code></pre>
+##### 3.2 交换机的几种主要类型
 <pre><code>
 （1）direct exchange(直连交换机)：根据消息携带的路由key值（routting key）将消息传递给对应的队列；
-     适用场景：聊天
+     
 
 （2）fanout exchange(扇形交换机)：将消息路由到绑定它的所有队列，没有路由key概念，不需考虑队列的路由key（routting key）；
      适用场景：群发短信，邮件等
@@ -65,16 +74,18 @@ rabbitmq通过ConnectionFaction连接工厂创建connection连接，通过connec
 
 （5）默认交换机：默认交换机是rabbitmq预先声明好的名字为空的direct Exchange直连交换机；
      我们每声明一个队列，都会被自动绑定到默认交换机上面，绑定的路由键routting key与队列名称一样；
+     当我们发送一条消息，没有写交换机的时候，会走默认交换机
      适用场景：普通一对一发短信消息     
 </code></pre>
-##### 3.2 交换机的重要属性参数
-<pre><code>
-type：交换机类型
-name:交换机名称
-Durability:是否持久化，如果持久化，rabbitmq重启后交换机还存在
-Auto-delete：当所有与该交换机绑定的队列都完成对交换机的使用之后，是否删除该交换机
-Arguments：扩展参数
-</code></pre>
+### 4 rabiitmq 六种工作模式 介绍
+* 简单模式：一个生产者，一个消费者（发送消息使用direct exchange直连交换机或者默认交换机）
 
+* work模式：一个生产者，多个消费者，每个消费者获取到的消息唯一（发送消息使用direct exchange直连交换机或者默认交换机）。
+  
+* 订阅模式：一个生产者发送的消息会被多个消费者获取（发送消息使用fanout exchange扇形交换机）。
+  
+* 路由模式：发送消息到交换机并且要指定路由key ，消费者将队列绑定到交换机时需要指定路由key（发送消息使用direct exchange直连交换机）。
+  
+* topic模式：和路由模式相似，但是支持路由binding key（队列绑定到交换机的路由键）的模糊匹配，“#”匹配一个词或多个词，“*”只匹配一个词（发送消息使用topic exchange主题交换机）。
 
-本例是个人学习笔记，环境大家一起交流学习，扣扣：568962516
+本例是个人学习笔记，欢迎大家一起交流学习，扣扣：568962516
