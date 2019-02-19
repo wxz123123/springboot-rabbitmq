@@ -57,25 +57,27 @@ rabbitmq通过ConnectionFaction连接工厂创建connection连接，通过connec
  </code></pre>
 ##### 3.2 交换机的几种主要类型
 <pre><code>
-（1）direct exchange(直连交换机)：根据消息携带的路由key值（routting key）将消息传递给对应的队列；
+（1）默认交换机：默认交换机是rabbitmq预先声明好的名字为空的direct Exchange直连交换机；
+     我们每声明一个队列，都会被自动绑定到默认交换机上面，绑定的路由键routting key与队列名称一样；
+     当我们发送一条消息，没有写明交换机的时候，会走默认交换机
+     适用场景：普通一对一发短信消息  
+     
+（2）direct exchange(直连交换机)：根据消息携带的路由key值（routting key）将消息传递给对应的队列；
      
 
-（2）fanout exchange(扇形交换机)：将消息路由到绑定它的所有队列，没有路由key概念，不需考虑队列的路由key（routting key）；
+（3）fanout exchange(扇形交换机)：将消息路由到绑定它的所有队列，没有路由key概念，不需考虑队列的路由key（routting key）；
      适用场景：群发短信，邮件等
 
-（3）topic exchange(主题交换机)：队列通过路由key绑定到交换机上，交换机根据消息携带的路由key，把消息路由到一个或多个绑定的队列上；
+（4）topic exchange(主题交换机)：队列通过路由key绑定到交换机上，交换机根据消息携带的路由key，把消息路由到一个或多个绑定的队列上；
      这个类型和直连交换机有点像，但是支持路由binding key（队列绑定到交换机的路由键）的模糊匹配，符号“#”匹配一个或多个单词，符号“*”只能匹配一个单词；
      比如：我们有两个队列one,two,
            one绑定到交换机的routting key为one.#
            two绑定到交换机的routting key为one.*
            如果生产者发送消息时routting key 为one.two,那么one,和two队列都可以收到消息
            如果生产者发送消息时routting key 为one.two.three,那么one队列收到消息,two队列没有收到消息，因为two队列绑定的routting key 是*号，只能匹配一个单词
-（4）headers exchange（头交换机）：  
+（5）headers exchange（头交换机）：  
 
-（5）默认交换机：默认交换机是rabbitmq预先声明好的名字为空的direct Exchange直连交换机；
-     我们每声明一个队列，都会被自动绑定到默认交换机上面，绑定的路由键routting key与队列名称一样；
-     当我们发送一条消息，没有写交换机的时候，会走默认交换机
-     适用场景：普通一对一发短信消息     
+   
 </code></pre>
 ### 4 rabiitmq 六种工作模式 介绍
 * 简单模式：一个生产者，一个消费者（发送消息使用direct exchange直连交换机或者默认交换机）
